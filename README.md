@@ -284,7 +284,7 @@ THEN I am able to successfully create, update, and delete data in my database
 
 
 ## Usage
-This application uses Express.js, Sequelize, and MySQL
+This application uses Express.js, Sequelize, and MySQL2
 
 ## Credits
 
