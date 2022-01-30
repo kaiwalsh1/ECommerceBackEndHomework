@@ -37,25 +37,29 @@ router.get('/:id', async (req, res) => {
 
 // CREATE a category
 router.post('/', async (req, res) => {
+  const { category_name } = req.body;
   try {
     const newCategory = await Category.create({
-      id: req.body.id,
-      category_name: req.body.category_name,
+      category_name,
     });
-    if (!id || !category_name) {
+    if (!category_name) {
       res.status(404).json({ message: 'You must provide id and category name' });
       return;
     }
     res.status(200).json(newCategory);
   } catch (e) {
-    res.status(400).json(e);
+    res.json(e);
   }
 });
 
 router.put('/:id', async (req, res) => {
   // update a category by its `id` value
+  const { id, category_name } = req.body;
   try {
     const categoryUpdate = await Category.update(req.body, {
+        category_name,
+    },
+    {
       where: {
         id: req.params.id,
       },
