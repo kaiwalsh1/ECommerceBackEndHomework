@@ -35,37 +35,34 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   // create a new tag
-  const {
-    id,
-    tag_name,
-  } = req.body;
-  if (!id || !tag_name) {
-    res.status(404).json({ message: 'You must provide id and tag name' });
-    return;
+  const { tag_name } = req.body;
+  try {
+    const newTag = await Tag.create({
+      tag_name,
+    });
+    res.json(newTag);
+  } catch (e) {
+    res.json(e);
   }
-  Tag.create(req.body)
-    .then((tags) => {
-      res.status(200).json(tags);
-    })
-    .catch((e) => {
-      console.log(e);
-      res.status(400).json(e)
-    })
 });
 
 router.put('/:id', async (req, res) => {
   // update a tag's name by its `id` value
+  const { tag_name } = req.body;
   try {
-    const tagUpdate = await Tag.update(req.body, {
-      where: {
-        id: req.params.id,
+    await Tag.update(
+      {
+        tag_name,
       },
-    });
-    if (!tagUpdate) {
-      res.status(404).json({ message: 'No tag with this id' });
-      return;
-    }
-    res.status(200).json(tagUpdate);
+      {
+        where: {
+          id: req.params.id,
+        },
+        // individualHooks: true,
+      }
+    );
+    const updatedTag = await Tag.findByPk(req.params.id);
+    res.status(200).json(updatedTag);
   } catch (e) {
     res.status(500).json(e);
   }
@@ -74,7 +71,8 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   // delete on tag by its `id` value
   try {
-    const deleteTag = await Tag.destroy({
+    const deleteTag = await Tag.findByPk(req.params.id);
+    await Tag.destroy({
       where: {
         id: req.params.id,
       },
