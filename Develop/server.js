@@ -10,6 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(routes);
+console.log(routes);
 
 // sync sequelize models to the database, then turn on the server
 sequelize.sync().then(() => {

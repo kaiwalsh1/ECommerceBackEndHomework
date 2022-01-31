@@ -23,11 +23,14 @@ router.get('/:id', async (req, res) => {
   // be sure to include its associated Category and Tag data
   try {
     const productData = await Product.findByPk(req.params.id, {
-      include: [{ model: Category}, { model: Tag }],
+      include: [
+        { model: Category}, 
+        { model: Tag }
+      ],
     });
-    if (!productData) {
-      res.status(404).json({ message: 'Product not found with that id' });
-    }
+    // if (!productData) {
+    //   res.status(404).json({ message: 'Product not found with that id' });
+    // }
     res.status(200).json(productData);
   } catch (e) {
     res.status(500).json(e);
@@ -42,10 +45,15 @@ router.post('/', async (req, res) => {
     stock,
     tagIds,
   } = req.body;
+  if (!product_name || !price || !stock) {
+    return res.json({ message: 'You must provide product name, price, and stock' });
+  }
+  
   Product.create(req.body)
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk 
       // create in the ProductTag model
+      
       if (req.body.tagIds.length) {
         const productTagIdArr = req.body.tagIds.map((tag_id) => {
           return {
@@ -56,9 +64,7 @@ router.post('/', async (req, res) => {
         return ProductTag.bulkCreate(productTagIdArr);
       }
       // if no product tags, just respond
-      if (!product_name || !price || !stock) {
-        return res.json({ message: 'You must provide product name, price, and stock' });
-      }
+
       res.status(200).json(product);
     })
     .then((productTagIds) => res.status(200).json(productTagIds))

@@ -42,10 +42,10 @@ router.post('/', async (req, res) => {
     const newCategory = await Category.create({
       category_name,
     });
-    if (!category_name) {
-      res.status(404).json({ message: 'You must provide id and category name' });
-      return;
-    }
+    // if (!category_name) {
+    //   res.status(404).json({ message: 'You must provide id and category name' });
+    //   return;
+    // }
     res.status(200).json(newCategory);
   } catch (e) {
     res.json(e);
@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   // update a category by its `id` value
-  const { id, category_name } = req.body;
+  const { category_name } = req.body;
   try {
     const categoryUpdate = await Category.update(req.body, {
         category_name,
@@ -64,10 +64,11 @@ router.put('/:id', async (req, res) => {
         id: req.params.id,
       },
     });
-    if (!categoryUpdate) {
-      res.status(404).json({ message: 'No category with this id' });
-    }
-    res.status(200).json(categoryUpdate);
+    // if (!categoryUpdate) {
+    //   res.status(404).json({ message: 'No category with this id' });
+    // }
+    const updatedCategory = await Category.findByPk(req.params.id);
+    res.status(200).json(updatedCategory);
   } catch (e) {
     res.status(500).json(e);
   }
@@ -82,10 +83,10 @@ router.delete('/:id', async (req, res) => {
         id: req.params.id,
       },
     });
-    if (!categoryData) {
-      res.status(404).json({ message: 'No category found with that id' });
-      return;
-    }
+    // if (!categoryData) {
+    //   res.status(404).json({ message: 'No category found with that id' });
+    //   return;
+    // }
     res.status(200).json(categoryData);
   } catch (e) {
     res.json(e);
