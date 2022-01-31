@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
     product_name,
     price,
     stock,
-    tagIds,
+    category_id,
   } = req.body;
   if (!product_name || !price || !stock) {
     return res.json({ message: 'You must provide product name, price, and stock' });
