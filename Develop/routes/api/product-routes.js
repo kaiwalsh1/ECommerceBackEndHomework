@@ -24,7 +24,7 @@ router.get('/:id', async (req, res) => {
   try {
     const productData = await Product.findByPk(req.params.id, {
       include: [
-        { model: Category}, 
+        { model: Category },
         { model: Tag }
       ],
     });
@@ -48,12 +48,11 @@ router.post('/', async (req, res) => {
   if (!product_name || !price || !stock) {
     return res.json({ message: 'You must provide product name, price, and stock' });
   }
-  
   Product.create(req.body)
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk 
       // create in the ProductTag model
-      
+
       if (req.body.tagIds.length) {
         const productTagIdArr = req.body.tagIds.map((tag_id) => {
           return {
@@ -64,12 +63,10 @@ router.post('/', async (req, res) => {
         return ProductTag.bulkCreate(productTagIdArr);
       }
       // if no product tags, just respond
-
       res.status(200).json(product);
     })
     .then((productTagIds) => res.status(200).json(productTagIds))
     .catch((e) => {
-      console.log('L:66', e);
       res.status(400).json(e);
     });
 });
@@ -111,24 +108,23 @@ router.put('/:id', (req, res) => {
     })
     .then((updatedProductTags) => res.json(updatedProductTags))
     .catch((err) => {
-      // console.log(err);
       res.status(400).json(err);
     });
 });
 
 router.delete('/:id', async (req, res) => {
   // delete one product by its `id` value
-try {
-  const deletedProduct = await Product.findByPk(req.params.id);
-  await Product.destroy({
-    where: {
-      id: req.params.id,
-    },
-  });
-  res.status(200).json(deletedProduct);
-} catch (e) {
-  res.json(e);
-}
+  try {
+    const deletedProduct = await Product.findByPk(req.params.id);
+    await Product.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
+    res.status(200).json(deletedProduct);
+  } catch (e) {
+    res.json(e);
+  }
 });
 
 module.exports = router;
