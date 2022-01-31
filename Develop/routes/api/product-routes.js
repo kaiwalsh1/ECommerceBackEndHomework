@@ -125,10 +125,6 @@ try {
       id: req.params.id,
     },
   });
-  if (!deletedProduct) {
-    res.status(404).json({ message: 'No product found with that id' });
-    return;
-  }
   res.status(200).json(deletedProduct);
 } catch (e) {
   res.json(e);
